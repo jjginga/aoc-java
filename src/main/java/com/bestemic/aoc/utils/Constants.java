@@ -3,6 +3,7 @@ package com.bestemic.aoc.utils;
 public class Constants {
 
     public static final String YEAR_2023 = "year2023";
+    public static final String YEAR_2024 = "year2024";
 
     public static final String DAY_01 = "day01";
     public static final String DAY_02 = "day02";

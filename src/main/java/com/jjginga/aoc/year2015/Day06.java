@@ -34,17 +34,20 @@ public class Day06 implements Solution {
         }
     }
 
-    private record Pos(int x, int y){}
+    //dimension of the grid
+    private static final int SIZE = 1000;
 
+    //Command enum
     private enum Cmd { TURN_ON, TURN_OFF, TOGGLE }
 
+    //pattern: "turn on|turn off|toogle xi,yi through xf, yf"
     private static final Pattern LINE_RX =
             Pattern.compile("^(turn on|turn off|toggle) (\\d+),(\\d+) through (\\d+),(\\d+)$");
 
     @Override
     public String part1(List<String> input) {
 
-        Set<Pos> onLights = new HashSet<>();
+        boolean[][] on = new boolean[SIZE][SIZE];
 
         input
                 .forEach(line -> {
@@ -61,34 +64,37 @@ public class Day06 implements Solution {
                         default -> Cmd.TOGGLE;
                     };
 
-                    //create Pos
-                    Pos from = new Pos(Integer.parseInt(matcher.group(2)), Integer.parseInt(matcher.group(3)));
-                    Pos to = new Pos(Integer.parseInt(matcher.group(4)), Integer.parseInt(matcher.group(5)));
+                    //initial coordinates
+                    int xi = Integer.parseInt(matcher.group(2));
+                    int yi = Integer.parseInt(matcher.group(3));
+                    //final coordinates
+                    int xf = Integer.parseInt(matcher.group(4));
+                    int yf = Integer.parseInt(matcher.group(5));
 
-                    //turn lights on or off
-                    IntStream.rangeClosed(from.x, to.x).forEach(x ->
-                            IntStream.rangeClosed(from.y, to.y)
-                                    .mapToObj(y -> new Pos(x, y))
-                                    .forEach(p -> {
-                                        switch (cmd) {
-                                            case TURN_ON -> onLights.add(p);
-                                            case TURN_OFF -> onLights.remove(p);
-                                            case TOGGLE -> {
-                                                if (!onLights.remove(p)) onLights.add(p);
-                                            }
-                                        }
-                                    })
-                    );
+                    //apply command to every cell in [xi..xf]×[yi..yf]
+                    for(int x = xi; x <= xf; x++) {
+                        for(int y = yi; y <= yf; y++) {
+                            switch(cmd) {
+                                case TURN_ON -> on[x][y] = true;
+                                case TURN_OFF -> on[x][y] = false;
+                                case TOGGLE -> on[x][y] = !on[x][y];
+                            }
+                        }
+                    }
+
                 });
-
-        return String.valueOf(onLights.size());
+        //count cells where on[x][y]
+        return String.valueOf(Arrays.stream(on)
+                .flatMapToInt(row -> IntStream.range(0, row.length)
+                                                        .filter(j->row[j]))
+                .count());
     }
 
 
     @Override
     public String part2(List<String> input) {
 
-        Map<Pos, Integer> onLights = new HashMap<>();
+        int[][] intensity = new int[SIZE][SIZE];
 
         input
                 .forEach(line -> {
@@ -105,28 +111,29 @@ public class Day06 implements Solution {
                         default -> Cmd.TOGGLE;
                     };
 
-                    //create Pos
-                    Pos from = new Pos(Integer.parseInt(matcher.group(2)), Integer.parseInt(matcher.group(3)));
-                    Pos to = new Pos(Integer.parseInt(matcher.group(4)), Integer.parseInt(matcher.group(5)));
+                    //initial coordinates
+                    int xi = Integer.parseInt(matcher.group(2));
+                    int yi = Integer.parseInt(matcher.group(3));
+                    //final coordinates
+                    int xf = Integer.parseInt(matcher.group(4));
+                    int yf = Integer.parseInt(matcher.group(5));
 
-                    //turn lights on or off
-                    IntStream.rangeClosed(from.x, to.x).forEach(x ->
-                            IntStream.rangeClosed(from.y, to.y)
-                                    .mapToObj(y -> new Pos(x, y))
-                                    .forEach(p -> {
-                                        switch (cmd) {
-                                            case TURN_ON -> onLights.put(p, onLights.getOrDefault(p, 0) + 1);
-                                            case TURN_OFF -> {
-                                                int val = onLights.getOrDefault(p, 0) - 1;
-                                                val = Math.max(val, 0);
-                                                onLights.put(p, val);
-                                            }
-                                            case TOGGLE -> onLights.put(p, onLights.getOrDefault(p, 0) + 2);
-                                        }
-                                    })
-                    );
+                    //apply command to every cell in [xi..xf]×[yi..yf]
+                    for(int x = xi; x <= xf; x++) {
+                        for(int y = yi; y <= yf; y++) {
+                            switch(cmd) {
+                                case TURN_ON -> intensity[x][y] += 1;
+                                case TURN_OFF -> intensity[x][y] = Math.max(0, intensity[x][y] - 1);
+                                case TOGGLE -> intensity[x][y] +=2 ;
+                            }
+                        }
+                    }
+
                 });
 
-        return String.valueOf(onLights.values().stream().mapToInt(x -> x).sum());
+        //sum all brightness values in intensity[][]
+        return String.valueOf(Arrays.stream(intensity)
+                .flatMapToInt(row -> IntStream.of(Arrays.stream(row).sum()))
+                .sum());
     }
 }

@@ -8,8 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.List;
 
-import static com.jjginga.aoc.utils.Constants.DAY_04;
-import static com.jjginga.aoc.utils.Constants.YEAR_2015;
+import static com.jjginga.aoc.utils.Constants.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class Day04Test {
@@ -28,7 +27,7 @@ public class Day04Test {
         long start = System.nanoTime();
         String result = solution.part1(input);
         long duration = System.nanoTime() - start;
-        System.out.printf("Part 1, result: %s | took %.2f ms%n", result, duration / 1_000_000.0);
+        System.out.printf("%s %s -> Part 1, result: %s | took %.2f ms%n", YEAR_2015, DAY_05, result, duration / 1_000_000.0);
 
         assertEquals("117946", result);
     }
@@ -40,7 +39,7 @@ public class Day04Test {
         long start = System.nanoTime();
         String result = solution.part2(input);
         long duration = System.nanoTime() - start;
-        System.out.printf("Part 2, result: %s | took %.2f ms%n", result, duration / 1_000_000.0);
+        System.out.printf("%s %s -> Part 2, result: %s | took %.2f ms%n", YEAR_2015, DAY_05, result, duration / 1_000_000.0);
 
         assertEquals("3938038", result);
     }

@@ -11,37 +11,37 @@ import java.util.List;
 import static com.jjginga.aoc.utils.Constants.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class Day02Test {
+public class Day08Test {
 
     private static Solution solution;
 
     @BeforeAll
     static void beforeAll() {
-        solution = new Day02();
+        solution = new Day08();
     }
 
     @Test
     void testPart1() throws IOException {
-        List<String> input = InputReader.readLines(YEAR_2015, DAY_02);
+        List<String> input = InputReader.readLines(YEAR_2015, DAY_08);
 
         long start = System.nanoTime();
         String result = solution.part1(input);
         long duration = System.nanoTime() - start;
-        System.out.printf("%s %s -> Part 1, result: %s | took %.2f ms%n", YEAR_2015, DAY_02, result, duration / 1_000_000.0);
+        System.out.printf("%s %s -> Part 1, result: %s | took %.2f ms%n", YEAR_2015, DAY_08, result, duration / 1_000_000.0);
 
-        assertEquals("1588178", result);
+        assertEquals("1342", result);
     }
 
     @Test
     void testPart2() throws IOException {
-        List<String> input = InputReader.readLines(YEAR_2015, DAY_02);
+        List<String> input = InputReader.readLines(YEAR_2015, DAY_08);
 
         long start = System.nanoTime();
         String result = solution.part2(input);
         long duration = System.nanoTime() - start;
-        System.out.printf("%s %s -> Part 2, result: %s | took %.2f ms%n", YEAR_2015, DAY_02, result, duration / 1_000_000.0);
+        System.out.printf("%s %s -> Part 2, result: %s | took %.2f ms%n", YEAR_2015, DAY_08, result, duration / 1_000_000.0);
 
-        assertEquals("3783758", result);
+        assertEquals("2074", result);
     }
 
 

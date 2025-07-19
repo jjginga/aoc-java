@@ -27,7 +27,7 @@ public class Day01Test {
         long start = System.nanoTime();
         String result = solution.part1(input);
         long duration = System.nanoTime() - start;
-        System.out.printf("Part 1, result: %s | took %.2f ms%n", result, duration / 1_000_000.0);
+        System.out.printf("%s %s -> Part 1, result: %s | took %.2f ms%n", YEAR_2015, DAY_01, result, duration / 1_000_000.0);
 
         assertEquals("232", result);
     }
@@ -39,7 +39,7 @@ public class Day01Test {
         long start = System.nanoTime();
         String result = solution.part2(input);
         long duration = System.nanoTime() - start;
-        System.out.printf("Part 2, result: %s | took %.2f ms%n", result, duration / 1_000_000.0);
+        System.out.printf("%s %s -> Part 2, result: %s | took %.2f ms%n", YEAR_2015, DAY_01, result, duration / 1_000_000.0);
 
         assertEquals("1783", result);
     }

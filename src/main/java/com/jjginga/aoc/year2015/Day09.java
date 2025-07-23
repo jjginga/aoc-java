@@ -36,9 +36,8 @@ public class Day09 implements Solution {
 
     // These variables are global state because we need the recursive dfs to update them
     private int bestCost;
-    private List<String> bestPath;
     private Map<String, Map<String, Integer>> distances;
-
+    private List<String> bestPath;
 
     @Override
     public String part1(List<String> input) {

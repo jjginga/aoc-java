@@ -40,9 +40,9 @@ public class Day03 implements Solution {
         try {
             List<String> input = InputReader.readLines(YEAR_2015, DAY_03);
 
-            Day03 day01 = new Day03();
-            String solutionPart1 = day01.part1(input);
-            String solutionPart2 = day01.part2(input);
+            Day03 day03 = new Day03();
+            String solutionPart1 = day03.part1(input);
+            String solutionPart2 = day03.part2(input);
 
             Utils.logResults(DAY_03, solutionPart1, solutionPart2);
         } catch (IOException e) {

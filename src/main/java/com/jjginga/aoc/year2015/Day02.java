@@ -39,9 +39,9 @@ public class Day02 implements Solution {
         try {
             List<String> input = InputReader.readLines(YEAR_2015, DAY_02);
 
-            Day02 day01 = new Day02();
-            String solutionPart1 = day01.part1(input);
-            String solutionPart2 = day01.part2(input);
+            Day02 day02 = new Day02();
+            String solutionPart1 = day02.part1(input);
+            String solutionPart2 = day02.part2(input);
 
             Utils.logResults(DAY_02, solutionPart1, solutionPart2);
         } catch (IOException e) {

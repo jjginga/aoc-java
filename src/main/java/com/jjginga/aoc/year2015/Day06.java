@@ -22,9 +22,9 @@ public class Day06 implements Solution {
         try {
             List<String> input = InputReader.readLines(YEAR_2015, DAY_06);
 
-            Day06 day01 = new Day06();
-            String solutionPart1 = day01.part1(input);
-            String solutionPart2 = day01.part2(input);
+            Day06 day06 = new Day06();
+            String solutionPart1 = day06.part1(input);
+            String solutionPart2 = day06.part2(input);
 
             Utils.logResults(DAY_06, solutionPart1, solutionPart2);
         } catch (IOException e) {

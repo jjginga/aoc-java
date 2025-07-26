@@ -8,8 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
@@ -37,69 +35,68 @@ public class Day15 implements Solution {
     }
 
     private final static int TOTAL_TEASPOONS = 100;
-    private final static int NUM_PROPERTIES = 4;
     private final static int CALORIES = 500;
-    private final static int CALORIE_POSITION = 4;
+    private static final Pattern INTEGER= Pattern.compile("-?\\d+");
 
-   @Override
-   public String part1(List<String> input) {
-
-
-       int maxScore = getMaxScore(input, false);
-
-       return String.valueOf(maxScore);
-   }
-
-    private int getMaxScore(List<String> input, boolean limitCalories) {
-        var ingredients = parseIngredients(input);
-        //var numProperties = Arrays.stream(ingredients).mapToInt(arr -> arr.length).max().orElseThrow();
-        var numIngredients = ingredients.length;
-
-        // Get all possible combinations that total number of teaspoons
-        List<List<Integer>> allCombinations = new ArrayList<>();
-        int[] currentCombination = new int[numIngredients]; //array to construct each combination
-
-        findAllCombinations(0, TOTAL_TEASPOONS, currentCombination, allCombinations);
-
-        int maxScore = Integer.MIN_VALUE;
-        for(var combination : allCombinations) {
-            int score = 1;
-            int calories = 0;
-            //for each property - we want for first four only
-            for (int p = 0; p < NUM_PROPERTIES; p++) {
-                int sum = 0;
-                //for each ingredient, for property P
-                for(int i = 0; i < numIngredients; i++) {
-                    sum += combination.get(i)*ingredients[i][p];
-
-                }
-                sum = Math.max(0, sum);
-
-                score *= sum;
-            }
-            if (limitCalories) {
-                for(int i = 0 ; i < numIngredients; i++) {
-                    calories += combination.get(i)*ingredients[i][CALORIE_POSITION];
-                }
-                if(calories == CALORIES) {
-                    maxScore = Math.max(maxScore, score);
-                }
-                continue;
-            }
-            maxScore = Math.max(maxScore, score);
-        }
-        return maxScore;
+    @Override
+    public String part1(List<String> input) {
+        return solve(input, false);
     }
 
     @Override
-   public String part2(List<String> input) {
+    public String part2(List<String> input) {
+        return solve(input, true);
+    }
 
-        return String.valueOf(getMaxScore(input, true));
-   }
+    private String solve(List<String> input, boolean limitCalories) {
+        var ingredients = parse(input);
 
-   private static final Pattern INTEGER= Pattern.compile("-?\\d+");
+        // Properties indices 0 to 3 and calories at index 4
+        int maxScore = 0;
+        // Sums per property and calories accumulator
+        int[] sums = new int[5];
 
-   private int[][] parseIngredients(List<String> input) {
+        maxScore = dfs(0, TOTAL_TEASPOONS, limitCalories, ingredients, sums, maxScore);
+        return String.valueOf(maxScore);
+    }
+
+    private int dfs(int idx, int remaining, boolean limitCalories, int[][] ingredients, int[] sums, int maxScore) {
+        int numIngredienst = ingredients.length;
+
+        //last ingredient
+        //compute property totals and clamp
+        if(idx == numIngredienst - 1) {
+            sums[idx] = remaining;
+            int score = 1;
+            for (int p = 0 ; p < 4; p++){
+                int sumP = 0;
+                for(int i = 0 ; i < numIngredienst ; i++) {
+                    sumP += sums[i] * ingredients[i][p];//negative values are zeroed before multiplying
+                }
+                sumP = Math.max(sumP, 0);
+                score *= sumP;
+            }
+
+            int calories = remaining * ingredients[idx][4] + IntStream.range(0,idx)
+                    .map(i -> sums[i] * ingredients[i][4]).sum();
+
+            if(!limitCalories || calories == CALORIES){
+                return Math.max(score, maxScore);
+            }
+
+            return maxScore;
+
+        }
+
+        for (int q = 0; q <= remaining; q++) {
+            sums[idx] = q;
+            maxScore = dfs(idx + 1, remaining - q, limitCalories, ingredients, sums, maxScore);
+        }
+
+        return maxScore;
+    }
+
+   private int[][] parse(List<String> input) {
         return input.stream()
                 .map(line -> INTEGER.matcher(line)
                         .results()
@@ -107,37 +104,5 @@ public class Day15 implements Solution {
                         .toArray()
                 )
                 .toArray(int[][]::new);
-   }
-
-   private void findAllCombinations(int ingredientIndex, int remainingTeaspoons, int[] currentCombination, List<List<Integer>> allCombinations) {
-       // All variables have been filled
-       if(ingredientIndex == currentCombination.length) {
-           // If there are no teaspoons left, the combination is vallid
-           if(remainingTeaspoons == 0) {
-               //A copy of the current combination is added to the combination list
-               var validCombinations = Arrays.stream(currentCombination).boxed().toList();
-               allCombinations.add(validCombinations);
-           }
-           return; // Ramifications of recursion
-       }
-
-       // There are no more teaspoons
-       // All remaining ingredients must be filled with zero
-       if(remainingTeaspoons == 0) {
-           IntStream.range(ingredientIndex, currentCombination.length)
-                   .forEach(i -> currentCombination[i] = 0);
-           // Call recursivelly to add this combination
-           findAllCombinations(currentCombination.length, remainingTeaspoons, currentCombination, allCombinations);
-           return;
-       }
-
-       // Distribute teaspoons for current variable
-       // Iterate over all quantities possible for current variabla
-       // It can go up to 0
-       for (int quantity = 0 ; quantity <= remainingTeaspoons ; quantity++) {
-           currentCombination[ingredientIndex] = quantity;
-
-           findAllCombinations(ingredientIndex + 1, remainingTeaspoons - quantity, currentCombination, allCombinations);
-       }
    }
 }

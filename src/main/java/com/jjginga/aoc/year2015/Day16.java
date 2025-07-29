@@ -144,28 +144,33 @@ public class Day16 implements Solution {
     }
 
     private static String solve(List<String> input, Comparator<Auntie> comparator) {
-        PriorityQueue<Auntie> aunties = new PriorityQueue<>(comparator);
+        Auntie best = null;
 
         //parse aunties and add them to priority queue
         for(var line: input) {
-            line = line.replaceAll(":", "");
-            line = line.replaceAll(",", "");
-            var lineArr = line.split(" ");
-            var auntieNumber = Integer.parseInt(lineArr[1]);
-            Map<Compound, Integer> compounds = new HashMap<>();
-            for(int i = 2; i < lineArr.length; ) {
-                compounds.put(Compound.get(lineArr[i]) , Integer.parseInt(lineArr[i+1]));
-                i+=2;
+            var auntie = parseAuntie(line);
+            if(best == null || comparator.compare(auntie, best) < 0) {
+                best = auntie;
             }
-            var auntie = new Auntie(auntieNumber, compounds);
-            aunties.add(auntie);
         }
 
 
-        assert aunties.peek() != null;
-        return String.valueOf(aunties.peek().number());
+        Objects.requireNonNull(best, "No best auntie found");
+        return String.valueOf(best.number());
     }
 
+    private static Auntie parseAuntie(String line) {
+        line = line.replaceAll(":", "");
+        line = line.replaceAll(",", "");
+        var lineArr = line.split(" ");
+        var auntieNumber = Integer.parseInt(lineArr[1]);
+        Map<Compound, Integer> compounds = new HashMap<>();
+        for(int i = 2; i < lineArr.length; ) {
+            compounds.put(Compound.get(lineArr[i]) , Integer.parseInt(lineArr[i+1]));
+            i+=2;
+        }
+        return new Auntie(auntieNumber, compounds);
+    }
 
 
 }
